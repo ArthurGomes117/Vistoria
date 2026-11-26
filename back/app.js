@@ -3,154 +3,135 @@ const cors = require('cors');
 const app = express();
 
 app.use(cors());
-// Configura para receber JSON
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-
-
-
-
-
-
-
-
-const PetDB = require('./PetDB');
-
-
-
+const VistoriaDB = require('./VistoriaDB');
 
 // Rota principal
 app.get('/', function (req, res) {
-
-    res.send('API dos Pets');
-
+    res.send('API Vistoria Informatizada');
 });
 
-// GET /pets
-app.get('/pets', function (req, res) {
 
-    PetDB.getPets(function (pets) {
-
-        res.json(pets);
-
+app.get('/vistorias', function (req, res) {
+    VistoriaDB.getVistorias(function (vistorias) {
+        res.json(vistorias);
     });
-
 });
 
-// GET /pets/:id
-app.get('/pets/:id', function (req, res) {
+app.get('/vistorias/filtro/:termo', function (req, res) {
+    VistoriaDB.buscarVistoriasPorFiltro(req.params.termo, function (vistorias) {
+        res.json(vistorias);
+    });
+});
 
+app.get('/vistorias/:id', function (req, res) {
     const id = parseInt(req.params.id);
-
     if (isNaN(id)) {
-
-        return res.status(400).json({
-            erro: 'ID inválido'
-        });
-
+        return res.status(400).json({ erro: 'ID inválido' });
     }
 
-    PetDB.getPetById(id, function (pet) {
-
-        if (!pet) {
-
-            return res.status(404).json({
-                erro: 'Pet não encontrado'
-            });
-
+    VistoriaDB.getVistoriaById(id, function (vistoria) {
+        if (!vistoria) {
+            return res.status(404).json({ erro: 'Vistoria não encontrada' });
         }
-
-        res.json(pet);
-
+        res.json(vistoria);
     });
-
 });
 
-// GET /pets/tipo/:tipo
-app.get('/pets/tipo/:tipo', function (req, res) {
-
-    const tipo = req.params.tipo;
-
-    PetDB.getPetsByTipo(tipo, function (pets) {
-
-        res.json(pets);
-
+app.post('/vistorias', function (req, res) {
+    const vistoria = req.body;
+    VistoriaDB.saveVistoria(vistoria, function (vistoriaSalva) {
+        res.status(201).json(vistoriaSalva);
     });
-
 });
 
-// POST /pets
-app.post('/pets', function (req, res) {
-
-    const pet = req.body;
-
-    PetDB.save(pet, function (petSalvo) {
-
-        res.status(201).json(petSalvo);
-
-    });
-
-});
-
-// PUT /pets
-app.put('/pets', function (req, res) {
-
-    const pet = req.body;
-
-    if (!pet.id) {
-
-        return res.status(400).json({
-            erro: 'Informe o ID do pet'
-        });
-
+app.put('/vistorias', function (req, res) {
+    const vistoria = req.body;
+    if (!vistoria.id) {
+        return res.status(400).json({ erro: 'Informe o ID da vistoria' });
     }
 
-    PetDB.update(pet, function (petAtualizado) {
-
+    VistoriaDB.updateVistoria(vistoria, function (vistoriaAtualizada) {
         res.json({
-            msg: 'Pet atualizado com sucesso',
-            pet: petAtualizado
+            msg: 'Vistoria atualizada com sucesso',
+            vistoria: vistoriaAtualizada
         });
-
     });
-
 });
 
-// DELETE /pets/:id
-app.delete('/pets/:id', function (req, res) {
-
+app.delete('/vistorias/:id', function (req, res) {
     const id = parseInt(req.params.id);
-
     if (isNaN(id)) {
-
-        return res.status(400).json({
-            erro: 'ID inválido'
-        });
-
+        return res.status(400).json({ erro: 'ID inválido' });
     }
 
-    PetDB.deleteById(id, function (affectedRows) {
-
+    VistoriaDB.deleteVistoriaById(id, function (affectedRows) {
         if (affectedRows === 0) {
-
-            return res.status(404).json({
-                erro: 'Pet não encontrado'
-            });
-
+            return res.status(404).json({ erro: 'Vistoria não encontrada' });
         }
-
-        res.json({
-            msg: 'Pet removido com sucesso'
-        });
-
+        res.json({ msg: 'Vistoria removida com sucesso' });
     });
-
 });
 
-// Inicializa servidor
+
+app.get('/ocorrencias', function (req, res) {
+    VistoriaDB.getOcorrencias(function (ocorrencias) {
+        res.json(ocorrencias);
+    });
+});
+
+app.get('/vistorias/:id/ocorrencias', function (req, res) {
+    const vistoriaId = parseInt(req.params.id);
+    if (isNaN(vistoriaId)) {
+        return res.status(400).json({ erro: 'ID de vistoria inválido' });
+    }
+
+    VistoriaDB.getOcorrenciasByVistoriaId(vistoriaId, function (ocorrencias) {
+        res.json(ocorrencias);
+    });
+});
+
+app.post('/ocorrencias', function (req, res) {
+    const ocorrencia = req.body;
+    if (!ocorrencia.vistoria_id || !ocorrencia.classificacao || !ocorrencia.descricao) {
+        return res.status(400).json({
+            erro: 'Informe vistoria_id, classificacao e descricao'
+        });
+    }
+
+    VistoriaDB.saveOcorrencia(ocorrencia, function (ocorrenciaSalva) {
+        res.status(201).json(ocorrenciaSalva);
+    });
+});
+
+
+app.post('/usuarios', function (req, res) {
+    const usuario = req.body;
+    if (!usuario.nome || !usuario.email || !usuario.senha || !usuario.perfil) {
+        return res.status(400).json({ erro: 'Preencha nome, email, senha e perfil' });
+    }
+
+    VistoriaDB.saveUsuario(usuario, function (usuarioSalvo) {
+        res.status(201).json(usuarioSalvo);
+    });
+});
+
+app.post('/login', function (req, res) {
+    const { email, senha } = req.body;
+    VistoriaDB.autenticarUsuario(email, senha, function (usuario) {
+        if (!usuario) {
+            return res.status(401).json({ erro: 'E-mail ou senha inválidos' });
+        }
+        res.json({
+            msg: 'Login realizado com sucesso',
+            usuario: usuario
+        });
+    });
+});
+
+
 const server = app.listen(3000, function () {
-
     console.log('Servidor iniciado em http://localhost:3000');
-
 });
