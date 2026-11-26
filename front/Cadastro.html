@@ -3,102 +3,74 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>SPA Cadastro de Pets</title>
-
+    <title>Vistoria Informatizada — Cadastro</title>
     <link rel="stylesheet" href="./css/style.css">
 </head>
 
 <body>
 
+    <header>
+        <a href="index.html" class="logo">
+            <img src="../imgs/logo.png" alt="Vistorias">
+        </a>
+        
+        <nav>
+            <ul>
+                <li><a href="Cadastro.html">Cadastrar</a></li>
+                <li><a href="Vistorias.html">Vistorias</a></li>
+                <li><a href="#sobre">Sobre-nós</a></li>
+            </ul>
+        </nav>
+    </header>
+
 <div class="container">
 
-    <h1>Sistema de Cadastro de Pets</h1>
+    <h1>Sistema de Vistoria Informatizada</h1>
 
     <div id="mensagem"></div>
 
     <section class="card">
-
-        <h2>Cadastro</h2>
+        <h2>Cadastro / Edição de Vistoria</h2>
 
         <input type="hidden" id="id">
 
-        <label>Nome</label>
-        <input type="text" id="nome">
+        <label>Identificador Único (ex.: VST-001)</label>
+        <input type="text" id="codigoIdentificador">
 
-        <label>Espécie</label>
-        <input type="text" id="especie">
+        <label>Placa do Veículo (ex.: ABC1D23)</label>
+        <input type="text" id="placa">
 
-        <label>Raça</label>
-        <input type="text" id="raca">
+        <label>Modelo do Veículo (ex.: Honda Civic EXL)</label>
+        <input type="text" id="modelo">
 
-        <label>Idade</label>
-        <input type="number" id="idade">
+        <label>Ano do Veículo</label>
+        <input type="number" id="ano" placeholder="Ex.: 2022">
 
-        <label>Dono</label>
-        <input type="text" id="dono">
+        <label>URL ou caminho da Foto do Veículo (ex.: ../imgs/CarroVistoria.png)</label>
+        <input type="text" id="fotoUrl">
 
-        <label>Tipo</label>
-        <input type="text" id="tipo">
+        <label>Responsável</label>
+        <input type="text" id="responsavel">
+
+        <label>Data de Abertura</label>
+        <input type="date" id="dataAbertura">
+
+        <label>Informações Iniciais para o Vistoriador</label>
+        <input type="text" id="informacoesIniciais">
+
+        <label>Descrição da Vistoria</label>
+        <input type="text" id="descricao">
+
+        <label style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+            <input type="checkbox" id="finalizada" style="width:auto;margin:0;">
+            Vistoria finalizada
+        </label>
 
         <div class="acoes">
-
-            <button id="btnSalvar">
-                Salvar
-            </button>
-
-            <button id="btnNovo">
-                Novo
-            </button>
-
+            <button id="btnSalvar" type="button">Salvar</button>
+            <button id="btnNovo" type="button">Novo</button>
+            <a href="./Vistorias.html"><button type="button">Ver Vistorias e Histórico</button></a>
         </div>
-
-    </section>
-
-    <section class="card">
-
-        <h2>Pesquisar por Tipo</h2>
-
-        <input id="tipoBusca">
-
-        <button id="btnBuscarTipo">
-            Buscar
-        </button>
-
-        <button id="btnListarTodos">
-            Todos
-        </button>
-
-    </section>
-
-    <section class="card">
-
-        <h2>Pets Cadastrados</h2>
-
-        <table>
-
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nome</th>
-                    <th>Espécie</th>
-                    <th>Raça</th>
-                    <th>Idade</th>
-                    <th>Dono</th>
-                    <th>Tipo</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
-
-            <tbody id="tbodyPets">
-
-            </tbody>
-
-        </table>
-
-        <div id="pagination">
-
-        </div>
-
     </section>
 
 </div>

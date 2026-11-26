@@ -1,261 +1,88 @@
 import {
-    listarPets,
-    buscarPorId,
-    buscarPorTipo,
-    salvarPet,
-    atualizarPet,
-    excluirPet
-} from './api.js';
+    buscarVistoriaPorId,
+    salvarVistoria,
+    atualizarVistoria
+} from "./api.js";
 
 import {
     mostrarMensagem,
-    limparFormulario,
-    preencherFormulario
-} from './ui.js';
+    limparFormularioVistoria,
+    preencherFormularioVistoria
+} from "./ui.js";
 
 import {
-    validarPet
-} from './validation.js';
+    validarVistoria
+} from "./validation.js";
 
 import {
-    paginate
-} from './pagination.js';
+    exigirAnalista,
+    renderizarBarraUsuario
+} from "./auth.js";
 
-let pets = [];
+let usuarioLogado = null;
 
-let paginaAtual = 1;
+window.addEventListener("DOMContentLoaded", async () => {
+    usuarioLogado = exigirAnalista();
+    if (!usuarioLogado) return;
 
-const itensPorPagina = 5;
+    renderizarBarraUsuario();
 
-window.addEventListener("DOMContentLoaded",()=>{
+    document.getElementById("btnSalvar").addEventListener("click", salvar);
+    document.getElementById("btnNovo").addEventListener("click", limparFormularioVistoria);
 
-    carregarPets();
+    // Preenche o responsável automaticamente com o nome do analista logado (se estiver vazio)
+    const inputResp = document.getElementById("responsavel");
+    if (inputResp && !inputResp.value) {
+        inputResp.value = usuarioLogado.nome;
+    }
 
-    document
-    .getElementById("btnSalvar")
-    .addEventListener("click", salvar);
+    const params = new URLSearchParams(window.location.search);
+    const idEditar = params.get("editar");
 
-    document
-    .getElementById("btnNovo")
-    .addEventListener("click",
-        limparFormulario);
-
-    document
-    .getElementById("btnBuscarTipo")
-    .addEventListener("click",
-        pesquisarTipo);
-
-    document
-    .getElementById("btnListarTodos")
-    .addEventListener("click",
-        carregarPets);
+    if (idEditar) {
+        const vistoria = await buscarVistoriaPorId(Number(idEditar));
+        if (vistoria && !vistoria.erro) {
+            preencherFormularioVistoria(vistoria);
+        }
+    }
 });
 
-async function carregarPets(){
-
-    pets = await listarPets();
-
-    paginaAtual = 1;
-
-    renderizarTabela();
-}
-
-function renderizarTabela(){
-
-    const tbody =
-        document.getElementById("tbodyPets");
-
-    tbody.innerHTML="";
-
-    const pagina =
-        paginate(
-            pets,
-            paginaAtual,
-            itensPorPagina
-        );
-
-    pagina.forEach(pet=>{
-
-        tbody.innerHTML+=`
-        <tr>
-            <td>${pet.id}</td>
-            <td>${pet.nome}</td>
-            <td>${pet.especie}</td>
-            <td>${pet.raca}</td>
-            <td>${pet.idade}</td>
-            <td>${pet.dono}</td>
-            <td>${pet.tipo}</td>
-
-            <td>
-
-            <button
-             onclick="editar(${pet.id})">
-             Editar
-            </button>
-
-            <button
-             onclick="remover(${pet.id})">
-             Excluir
-            </button>
-
-            </td>
-        </tr>
-        `;
-    });
-
-    renderizarPaginas();
-}
-
-function renderizarPaginas(){
-
-    const qtd =
-        Math.ceil(
-          pets.length /
-          itensPorPagina
-        );
-
-    let html='';
-
-    for(let i=1;i<=qtd;i++){
-
-        html += `
-        <button
-        onclick="irPagina(${i})">
-        ${i}
-        </button>
-        `;
-    }
-
-    document
-    .getElementById("pagination")
-    .innerHTML = html;
-}
-
-window.irPagina = function(pagina){
-
-    paginaAtual = pagina;
-
-    renderizarTabela();
-}
-
-window.editar = async function(id){
-
-    const pet =
-        await buscarPorId(id);
-
-    preencherFormulario(pet);
-}
-
-window.remover = async function(id){
-
-    if(!confirm("Deseja excluir?"))
-        return;
-
-    await excluirPet(id);
-
-    mostrarMensagem(
-        "Pet removido",
-        "sucesso"
-    );
-
-    carregarPets();
-}
-
-
 async function salvar() {
+    const id = document.getElementById("id").value;
 
-    const id =
-        document.getElementById("id").value;
-
-    const pet = {
-
-        nome:
-        document.getElementById("nome").value,
-
-        especie:
-        document.getElementById("especie").value,
-
-        raca:
-        document.getElementById("raca").value,
-
-        idade:
-        Number(
-            document.getElementById("idade").value
-        ),
-
-        dono:
-        document.getElementById("dono").value,
-
-        tipo:
-        document.getElementById("tipo").value
+    const vistoria = {
+        codigo_identificador: document.getElementById("codigoIdentificador").value.trim(),
+        placa: document.getElementById("placa").value.trim().toUpperCase(),
+        modelo: document.getElementById("modelo").value.trim(),
+        ano: Number(document.getElementById("ano").value),
+        foto_url: document.getElementById("fotoUrl").value.trim(),
+        responsavel: document.getElementById("responsavel").value.trim(),
+        data_abertura: document.getElementById("dataAbertura").value,
+        informacoes_iniciais: document.getElementById("informacoesIniciais").value.trim(),
+        descricao: document.getElementById("descricao").value.trim(),
+        finalizada: document.getElementById("finalizada").checked,
+        usuario_id: usuarioLogado.id
     };
 
-    const erros = validarPet(pet);
-
-    if(erros.length > 0){
-
-        mostrarMensagem(
-            erros.join(" | "),
-            "erro"
-        );
-
+    const erros = validarVistoria(vistoria);
+    if (erros.length > 0) {
+        mostrarMensagem(erros.join(" | "), "erro");
         return;
     }
 
-    try{
-
-        if(id){
-
-            pet.id = Number(id);
-
-            await atualizarPet(pet);
-
-            mostrarMensagem(
-                "Pet atualizado",
-                "sucesso"
-            );
-        }
-        else{
-
-            await salvarPet(pet);
-
-            mostrarMensagem(
-                "Pet cadastrado",
-                "sucesso"
-            );
+    try {
+        if (id) {
+            vistoria.id = Number(id);
+            await atualizarVistoria(vistoria);
+            mostrarMensagem("Vistoria atualizada", "sucesso");
+        } else {
+            await salvarVistoria(vistoria);
+            mostrarMensagem("Vistoria cadastrada", "sucesso");
         }
 
-        limparFormulario();
-
-        carregarPets();
-
-    }catch(erro){
-
-        mostrarMensagem(
-            erro.message,
-            "erro"
-        );
+        limparFormularioVistoria();
+        document.getElementById("responsavel").value = usuarioLogado.nome;
+    } catch (erro) {
+        mostrarMensagem(erro.message, "erro");
     }
-}
-
-async function pesquisarTipo(){
-
-    const tipo =
-      document
-      .getElementById("tipoBusca")
-      .value;
-
-    if(tipo===""){
-
-        carregarPets();
-
-        return;
-    }
-
-    pets =
-      await buscarPorTipo(tipo);
-
-    paginaAtual = 1;
-
-    renderizarTabela();
 }

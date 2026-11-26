@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Vistorias e Histórico de Ocorrências</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+
+    <header>
+        <a href="index.html" class="logo">
+            <img src="../imgs/logo.png" alt="Vistorias">
+        </a>
+        
+        <nav>
+            <ul>
+                <li><a href="Cadastro.html">Cadastrar</a></li>
+                <li><a href="Vistorias.html">Vistorias</a></li>
+                <li><a href="#sobre">Sobre-nós</a></li>
+            </ul>
+        </nav>
+    </header>
+
+<div class="container">
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;gap:12px;flex-wrap:wrap;">
+        <h1 style="margin:0;">Vistorias e Histórico de Ocorrências</h1>
+        <div class="acoes">
+            <a href="./index.html"><button type="button">Início</button></a>
+            <a href="./Cadastro.html"><button type="button">Nova Vistoria</button></a>
+        </div>
+    </div>
+
+    <div id="mensagem"></div>
+
+    <section class="card">
+        <h2>Filtrar Vistorias</h2>
+
+        <label>Buscar por identificador, placa, modelo ou responsável</label>
+        <input type="text" id="filtroBusca">
+
+        <label>Status</label>
+        <select id="filtroStatus" style="width:100%;padding:10px;margin-top:4px;margin-bottom:12px;">
+            <option value="">Todos</option>
+            <option value="aberta">Em aberto</option>
+            <option value="finalizada">Finalizada</option>
+        </select>
+
+        <div class="acoes">
+            <button id="btnBuscar" type="button">Buscar</button>
+            <button id="btnListarTodos" type="button">Todos</button>
+        </div>
+    </section>
+
+    <section class="card">
+        <h2>Vistorias Cadastradas</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Identificador</th>
+                    <th>Veículo</th>
+                    <th>Foto</th>
+                    <th>Responsável</th>
+                    <th>Data Abertura</th>
+                    <th>Descrição</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody id="tbodyVistorias"></tbody>
+        </table>
+
+        <div id="pagination" class="pagination"></div>
+    </section>
+
+    <section class="card">
+        <h2>Registrar Ocorrência na Vistoria</h2>
+
+        <label>Vistoria</label>
+        <select id="selectVistoriaOcorrencia" style="width:100%;padding:10px;margin-top:4px;margin-bottom:12px;">
+            <option value="">Selecione uma vistoria...</option>
+        </select>
+
+        <label>Classificação</label>
+        <input type="text" id="classificacaoOcorrencia" placeholder="Ex.: Funilaria, Mecânica, Documentação, Pneus...">
+
+        <label>Data e Hora da Ocorrência</label>
+        <input type="datetime-local" id="dataOcorrencia">
+
+        <label>Descrição da Ocorrência</label>
+        <input type="text" id="descricaoOcorrencia">
+
+        <button id="btnSalvarOcorrencia" type="button">Registrar Ocorrência</button>
+
+        <h3 style="margin-top:20px;margin-bottom:10px;">Ocorrências da Vistoria Selecionada</h3>
+        <ul id="ocorrenciasDaVistoria" style="padding-left:20px;"></ul>
+    </section>
+
+    <section class="card">
+        <h2>Histórico Geral de Ocorrências</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Vistoria / Placa</th>
+                    <th>Classificação</th>
+                    <th>Data/Hora</th>
+                    <th>Descrição</th>
+                </tr>
+            </thead>
+            <tbody id="tbodyHistoricoOcorrencias"></tbody>
+        </table>
+    </section>
+
+</div>
+
+<script type="module" src="./js/vistorias.js"></script>
+
+</body>
+</html>

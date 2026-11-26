@@ -1,23 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vistorias</title>
 
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
 
 </head>
+
 <body>
     <header>
         <a href="#home" class="logo">
             <img src="../imgs/logo.png" alt="Vistorias">
         </a>
-        
+
         <nav>
             <ul>
-                <li><a href="#agendar">Agendar</a></li>
-                <li><a href="#historico">Historico</a></li>
+                <li><a href="Cadastro.html">Cadastrar</a></li>
+                <li><a href="Vistorias.html">Vistorias</a></li>
                 <li><a href="#sobre">Sobre-nós</a></li>
             </ul>
         </nav>
@@ -25,9 +27,31 @@
 
     <div class="corpo">
         <div><img src="../imgs/CarroVistoria.png" alt="Faça seu agendamento"></div>
-        <div class="conteudo"><h1>O lugar mais confiavel para vistoriar seu carro</h1></div>
+        <div class="conteudo">
+            <h1>
+                O lugar mais confiavel para vistoriar seu carro
+            </h1>
+            <h2>
+                Controle de vistorias veiculares, acompanhamento de status e registro de ocorrências por perfil de
+                acesso.
+            </h2>
+
+            <div class="botoes">
+                <a href="./Login.html"><button type="button">Entrar / Cadastrar Usuário</button></a>
+                <a href="./Vistorias.html"><button type="button">Consultar Vistorias</button></a>
+            </div>
+        </div>
     </div>
+
+    <script type="module">
+        import { renderizarBarraUsuario } from "./js/auth.js";
+        window.addEventListener("DOMContentLoaded", () => {
+            renderizarBarraUsuario();
+        });
+    </script>
+
 </body>
 
-<script src="script.js"></script>
+<script src="js/script.js"></script>
+
 </html>

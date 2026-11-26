@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Login — Vistoria Informatizada</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <style>
+        
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <a href="index.html" class="logo">
+            <img src="../imgs/logo.png" alt="Vistorias">
+        </a>
+        <nav>
+            <ul>
+                <li><a href="index.html">Início</a></li>
+                <li><a href="Login.html">Login</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container">
+        <h1>Acesso ao Sistema de Vistoria</h1>
+
+        <div id="mensagem"></div>
+
+        <div class="login-grid">
+            <!-- ENTRAR -->
+            <section class="card">
+                <h2>Entrar</h2>
+
+                <label>E-mail</label>
+                <input type="email" id="loginEmail" placeholder="usuario@gmail.com">
+
+                <label>Senha (use apenas o teclado virtual)</label>
+                <div style="display:flex;gap:8px;align-items:center;">
+                    <input type="password" id="loginSenha" readonly placeholder="Clique nos números abaixo">
+                    <button type="button" id="btnToggleSenha">Ver</button>
+                </div>
+
+                <div id="tecladoVirtual" class="teclado-virtual"></div>
+
+                <div class="teclado-acoes">
+                    <button type="button" id="btnBackspace">Apagar</button>
+                    <button type="button" id="btnLimparTeclado">Limpar</button>
+                </div>
+
+                <button type="button" id="btnEntrar">Entrar</button>
+            </section>
+
+            <section class="card">
+                <h2>Cadastrar Novo Usuário</h2>
+
+                <label>Nome Completo</label>
+                <input type="text" id="cadNome" placeholder="Ex: Clovis Tavares">
+
+                <label>E-mail</label>
+                <input type="email" id="cadEmail" placeholder="clovis@gmail.com">
+
+                <label>Senha (clique aqui e use o teclado virtual ao lado)</label>
+                <input type="password" id="cadSenha" readonly placeholder="Clique aqui e digite no teclado 3x4">
+
+                <label>Perfil</label>
+                <select id="cadPerfil" style="width:100%;padding:10px;margin-top:4px;margin-bottom:12px;">
+                    <option value="OPERADOR">OPERADOR</option>
+                    <option value="ANALISTA">ANALISTA</option>
+                </select>
+
+                <button type="button" id="btnCadastrarUsuario">Cadastrar Usuário</button>
+            </section>
+        </div>
+    </div>
+
+    <script type="module" src="./js/login.js"></script>
+
+</body>
+</html>

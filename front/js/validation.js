@@ -1,24 +1,41 @@
-export function validarPet(pet){
+export function validarVistoria(vistoria) {
+    const erros = [];
 
-    let erros = [];
+    if (!vistoria.codigo_identificador)
+        erros.push("Informe o identificador único da vistoria");
 
-    if(!pet.nome)
-        erros.push("Informe o nome");
+    if (!vistoria.placa)
+        erros.push("Informe a placa do veículo");
 
-    if(!pet.especie)
-        erros.push("Informe a espécie");
+    if (!vistoria.modelo)
+        erros.push("Informe o modelo do veículo");
 
-    if(!pet.raca)
-        erros.push("Informe a raça");
+    if (!vistoria.ano || vistoria.ano < 1900 || vistoria.ano > 2100)
+        erros.push("Informe um ano válido para o veículo");
 
-    if(!pet.dono)
-        erros.push("Informe o dono");
+    if (!vistoria.responsavel)
+        erros.push("Informe o responsável");
 
-    if(!pet.tipo)
-        erros.push("Informe o tipo");
+    if (!vistoria.data_abertura)
+        erros.push("Informe a data de abertura");
 
-    if(!pet.idade || pet.idade <= 0)
-        erros.push("Idade inválida");
+    return erros;
+}
+
+export function validarOcorrencia(ocorrencia) {
+    const erros = [];
+
+    if (!ocorrencia.vistoria_id)
+        erros.push("Selecione uma vistoria");
+
+    if (!ocorrencia.classificacao)
+        erros.push("Informe a classificação da ocorrência");
+
+    if (!ocorrencia.data_ocorrencia)
+        erros.push("Informe a data da ocorrência");
+
+    if (!ocorrencia.descricao)
+        erros.push("Informe a descrição da ocorrência");
 
     return erros;
 }
