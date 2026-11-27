@@ -55,10 +55,15 @@ function aplicarPermissoesNaTela() {
 }
 
 async function carregarVistorias() {
-    vistorias = await listarVistorias();
-    paginaAtual = 1;
-    atualizarSelectVistorias();
-    renderizarTabela();
+    try {
+        const dados = await listarVistorias();
+        vistorias = Array.isArray(dados) ? dados : [];
+        paginaAtual = 1;
+        atualizarSelectVistorias();
+        renderizarTabela();
+    } catch (erro) {
+        mostrarMensagem(erro.message, "erro");
+    }
 }
 
 function atualizarSelectVistorias() {
@@ -148,10 +153,14 @@ window.remover = async function (id) {
     if (usuarioLogado.perfil !== "ANALISTA") return;
     if (!confirm("Deseja excluir esta vistoria?")) return;
 
-    await excluirVistoria(id);
-    mostrarMensagem("Vistoria removida", "sucesso");
-    carregarVistorias();
-    carregarHistoricoOcorrencias();
+    try {
+        await excluirVistoria(id);
+        mostrarMensagem("Vistoria removida", "sucesso");
+        await carregarVistorias();
+        await carregarHistoricoOcorrencias();
+    } catch (erro) {
+        mostrarMensagem(erro.message, "erro");
+    }
 };
 
 window.selecionarParaOcorrencia = async function (vistoriaId) {
@@ -165,19 +174,25 @@ async function pesquisar() {
     const termo = document.getElementById("filtroBusca").value.trim();
     const statusFiltro = document.getElementById("filtroStatus").value;
 
-    let lista = termo
-        ? await buscarVistoriasPorFiltro(termo)
-        : await listarVistorias();
+    try {
+        let lista = termo
+            ? await buscarVistoriasPorFiltro(termo)
+            : await listarVistorias();
 
-    if (statusFiltro === "aberta") {
-        lista = lista.filter(v => !v.finalizada);
-    } else if (statusFiltro === "finalizada") {
-        lista = lista.filter(v => Boolean(v.finalizada));
+        lista = Array.isArray(lista) ? lista : [];
+
+        if (statusFiltro === "aberta") {
+            lista = lista.filter(v => !v.finalizada);
+        } else if (statusFiltro === "finalizada") {
+            lista = lista.filter(v => Boolean(v.finalizada));
+        }
+
+        vistorias = lista;
+        paginaAtual = 1;
+        renderizarTabela();
+    } catch (erro) {
+        mostrarMensagem(erro.message, "erro");
     }
-
-    vistorias = lista;
-    paginaAtual = 1;
-    renderizarTabela();
 }
 
 async function registrarOcorrencia() {
@@ -221,35 +236,45 @@ async function aoSelecionarVistoria() {
 
     if (!vistoriaId) return;
 
-    const lista = await listarOcorrenciasPorVistoria(vistoriaId);
-    if (!lista.length) {
-        ul.innerHTML = "<li>Nenhuma ocorrência registrada para esta vistoria ainda.</li>";
-        return;
-    }
+    try {
+        const lista = await listarOcorrenciasPorVistoria(vistoriaId);
+        if (!Array.isArray(lista) || !lista.length) {
+            ul.innerHTML = "<li>Nenhuma ocorrência registrada para esta vistoria ainda.</li>";
+            return;
+        }
 
-    lista.forEach(oc => {
-        const dt = String(oc.data_ocorrencia).replace("T", " ").slice(0, 16);
-        ul.innerHTML += `<li><strong>[${oc.classificacao}]</strong> (${dt}) — ${oc.descricao}</li>`;
-    });
+        lista.forEach(oc => {
+            const dt = String(oc.data_ocorrencia).replace("T", " ").slice(0, 16);
+            ul.innerHTML += `<li><strong>[${oc.classificacao}]</strong> (${dt}) — ${oc.descricao}</li>`;
+        });
+    } catch (erro) {
+        mostrarMensagem(erro.message, "erro");
+    }
 }
 
 async function carregarHistoricoOcorrencias() {
     const tbody = document.getElementById("tbodyHistoricoOcorrencias");
     if (!tbody) return;
 
-    const lista = await listarOcorrencias();
-    tbody.innerHTML = "";
+    try {
+        const lista = await listarOcorrencias();
+        tbody.innerHTML = "";
 
-    lista.forEach(oc => {
-        const dt = String(oc.data_ocorrencia).replace("T", " ").slice(0, 16);
-        tbody.innerHTML += `
-        <tr>
-            <td>${oc.id}</td>
-            <td>${oc.codigo_identificador || oc.vistoria_id} (${oc.placa || "-"})</td>
-            <td>${oc.classificacao}</td>
-            <td>${dt}</td>
-            <td>${oc.descricao}</td>
-        </tr>
-        `;
-    });
+        if (!Array.isArray(lista)) return;
+
+        lista.forEach(oc => {
+            const dt = String(oc.data_ocorrencia).replace("T", " ").slice(0, 16);
+            tbody.innerHTML += `
+            <tr>
+                <td>${oc.id}</td>
+                <td>${oc.codigo_identificador || oc.vistoria_id} (${oc.placa || "-"})</td>
+                <td>${oc.classificacao}</td>
+                <td>${dt}</td>
+                <td>${oc.descricao}</td>
+            </tr>
+            `;
+        });
+    } catch (erro) {
+        mostrarMensagem(erro.message, "erro");
+    }
 }

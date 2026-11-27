@@ -4,7 +4,10 @@ const VistoriaDB = {
     getVistorias: function (callback) {
         const sql = 'SELECT * FROM vistorias ORDER BY id DESC';
         db.query(sql, function (err, results) {
-            if (err) throw err;
+            if (err) {
+                console.error('Erro ao buscar vistorias:', err.message);
+                return callback({ erro: 'Erro ao consultar vistorias no banco.' });
+            }
             callback(results);
         });
     },
@@ -12,7 +15,10 @@ const VistoriaDB = {
     getVistoriaById: function (id, callback) {
         const sql = 'SELECT * FROM vistorias WHERE id = ?';
         db.query(sql, [id], function (err, results) {
-            if (err) throw err;
+            if (err) {
+                console.error('Erro ao buscar vistoria por ID:', err.message);
+                return callback({ erro: 'Erro ao consultar vistoria no banco.' });
+            }
             callback(results[0] || null);
         });
     },
@@ -28,7 +34,10 @@ const VistoriaDB = {
             ORDER BY id DESC
         `;
         db.query(sql, [termo, termo, termo, termo], function (err, results) {
-            if (err) throw err;
+            if (err) {
+                console.error('Erro ao filtrar vistorias:', err.message);
+                return callback({ erro: 'Erro ao filtrar vistorias no banco.' });
+            }
             callback(results);
         });
     },
@@ -56,7 +65,13 @@ const VistoriaDB = {
         ];
 
         db.query(sql, params, function (err, result) {
-            if (err) throw err;
+            if (err) {
+                console.error('Erro ao salvar vistoria:', err.message);
+                if (err.code === 'ER_DUP_ENTRY') {
+                    return callback({ erro: 'Já existe uma vistoria com este identificador.' });
+                }
+                return callback({ erro: 'Erro ao salvar vistoria no banco.' });
+            }
             callback({
                 id: result.insertId,
                 ...vistoria
@@ -94,7 +109,13 @@ const VistoriaDB = {
         ];
 
         db.query(sql, params, function (err, result) {
-            if (err) throw err;
+            if (err) {
+                console.error('Erro ao atualizar vistoria:', err.message);
+                if (err.code === 'ER_DUP_ENTRY') {
+                    return callback({ erro: 'Já existe outra vistoria com este identificador.' });
+                }
+                return callback({ erro: 'Erro ao atualizar vistoria no banco.' });
+            }
             callback(vistoria);
         });
     },
@@ -102,11 +123,16 @@ const VistoriaDB = {
     deleteVistoriaById: function (id, callback) {
         const sql = 'DELETE FROM vistorias WHERE id = ?';
         db.query(sql, [id], function (err, result) {
-            if (err) throw err;
+            if (err) {
+                console.error('Erro ao excluir vistoria:', err.message);
+                if (err.code === 'ER_ROW_IS_REFERENCED_2') {
+                    return callback({ erro: 'Não é possível excluir vistoria que possui ocorrências.' });
+                }
+                return callback({ erro: 'Erro ao excluir vistoria no banco.' });
+            }
             callback(result.affectedRows);
         });
     },
-
 
     getOcorrencias: function (callback) {
         const sql = `
@@ -116,7 +142,10 @@ const VistoriaDB = {
             ORDER BY o.data_ocorrencia DESC
         `;
         db.query(sql, function (err, results) {
-            if (err) throw err;
+            if (err) {
+                console.error('Erro ao buscar ocorrências:', err.message);
+                return callback({ erro: 'Erro ao consultar ocorrências no banco.' });
+            }
             callback(results);
         });
     },
@@ -124,7 +153,10 @@ const VistoriaDB = {
     getOcorrenciasByVistoriaId: function (vistoriaId, callback) {
         const sql = 'SELECT * FROM ocorrencias WHERE vistoria_id = ? ORDER BY data_ocorrencia DESC';
         db.query(sql, [vistoriaId], function (err, results) {
-            if (err) throw err;
+            if (err) {
+                console.error('Erro ao buscar ocorrências da vistoria:', err.message);
+                return callback({ erro: 'Erro ao consultar ocorrências da vistoria.' });
+            }
             callback(results);
         });
     },
@@ -144,7 +176,16 @@ const VistoriaDB = {
         ];
 
         db.query(sql, params, function (err, result) {
-            if (err) throw err;
+            if (err) {
+                console.error('Erro ao registrar ocorrência:', err.message);
+                if (err.code === 'ER_NO_REFERENCED_ROW_2') {
+                    return callback({ erro: 'A vistoria informada não existe.' });
+                }
+                if (err.code === 'ER_TRUNCATED_WRONG_VALUE' || err.code === 'ER_BAD_NULL_ERROR') {
+                    return callback({ erro: 'Dados ou data da ocorrência inválidos.' });
+                }
+                return callback({ erro: 'Erro ao registrar ocorrência no banco.' });
+            }
             callback({
                 id: result.insertId,
                 ...ocorrencia
@@ -152,12 +193,11 @@ const VistoriaDB = {
         });
     },
 
-
     saveUsuario: function (usuario, callback) {
         const sql = `
-        INSERT INTO usuarios (nome, email, senha_hash, perfil)
-        VALUES (?, ?, ?, ?)
-    `;
+            INSERT INTO usuarios (nome, email, senha_hash, perfil)
+            VALUES (?, ?, ?, ?)
+        `;
         const params = [
             usuario.nome,
             usuario.email,
@@ -167,6 +207,7 @@ const VistoriaDB = {
 
         db.query(sql, params, function (err, result) {
             if (err) {
+                console.error('Erro ao salvar usuário:', err.message);
                 if (err.code === 'ER_DUP_ENTRY') {
                     return callback({ erro: 'Este e-mail já está cadastrado.' });
                 }
@@ -188,7 +229,10 @@ const VistoriaDB = {
             WHERE email = ? AND senha_hash = ?
         `;
         db.query(sql, [email, senha], function (err, results) {
-            if (err) throw err;
+            if (err) {
+                console.error('Erro ao autenticar usuário:', err.message);
+                return callback({ erro: 'Erro ao consultar usuário no banco.' });
+            }
             callback(results[0] || null);
         });
     }

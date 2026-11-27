@@ -39,9 +39,13 @@ window.addEventListener("DOMContentLoaded", async () => {
     const idEditar = params.get("editar");
 
     if (idEditar) {
-        const vistoria = await buscarVistoriaPorId(Number(idEditar));
-        if (vistoria && !vistoria.erro) {
-            preencherFormularioVistoria(vistoria);
+        try {
+            const vistoria = await buscarVistoriaPorId(Number(idEditar));
+            if (vistoria) {
+                preencherFormularioVistoria(vistoria);
+            }
+        } catch (erro) {
+            mostrarMensagem(erro.message, "erro");
         }
     }
 });
