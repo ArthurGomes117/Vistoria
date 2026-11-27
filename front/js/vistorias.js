@@ -47,7 +47,6 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 function aplicarPermissoesNaTela() {
-    // Esconde links/botões de criar nova vistoria se não for ANALISTA
     if (usuarioLogado.perfil !== "ANALISTA") {
         document.querySelectorAll('a[href*="Cadastro.html"]').forEach(el => {
             el.style.display = "none";

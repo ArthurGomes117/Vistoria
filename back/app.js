@@ -8,7 +8,6 @@ app.use(express.json());
 
 const VistoriaDB = require('./VistoriaDB');
 
-// Rota principal
 app.get('/', function (req, res) {
     res.send('API Vistoria Informatizada');
 });

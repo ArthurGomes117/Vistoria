@@ -4,7 +4,6 @@ CREATE DATABASE IF NOT EXISTS vistoria_informatizada
 
 USE vistoria_informatizada;
 
--- Tabela de Usuários (Analistas e Operadores)
 CREATE TABLE IF NOT EXISTS usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
@@ -14,7 +13,6 @@ CREATE TABLE IF NOT EXISTS usuarios (
     criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Tabela de Vistorias Veiculares
 CREATE TABLE IF NOT EXISTS vistorias (
     id INT AUTO_INCREMENT PRIMARY KEY,
     codigo_identificador VARCHAR(50) NOT NULL UNIQUE,
@@ -34,7 +32,6 @@ CREATE TABLE IF NOT EXISTS vistorias (
         ON DELETE SET NULL
 );
 
--- Tabela de Ocorrências da Vistoria
 CREATE TABLE IF NOT EXISTS ocorrencias (
     id INT AUTO_INCREMENT PRIMARY KEY,
     vistoria_id INT NOT NULL,
@@ -51,7 +48,6 @@ CREATE TABLE IF NOT EXISTS ocorrencias (
         ON DELETE SET NULL
 );
 
--- Dados iniciais de exemplo para testes (senhas compatíveis com o teclado virtual 3x4)
 INSERT IGNORE INTO usuarios (id, nome, email, senha_hash, perfil) VALUES
 (1, 'Arthur Analista', 'analista@vistoria.com', '1234', 'ANALISTA'),
 (2, 'Carlos Operador', 'operador@vistoria.com', '1234', 'OPERADOR');

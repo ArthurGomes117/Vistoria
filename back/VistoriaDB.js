@@ -1,7 +1,6 @@
 const db = require('./db');
 
 const VistoriaDB = {
-    // --- VISTORIAS ---
     getVistorias: function (callback) {
         const sql = 'SELECT * FROM vistorias ORDER BY id DESC';
         db.query(sql, function (err, results) {
@@ -156,9 +155,9 @@ const VistoriaDB = {
 
     saveUsuario: function (usuario, callback) {
         const sql = `
-            INSERT INTO usuarios (nome, email, senha_hash, perfil)
-            VALUES (?, ?, ?, ?)
-        `;
+        INSERT INTO usuarios (nome, email, senha_hash, perfil)
+        VALUES (?, ?, ?, ?)
+    `;
         const params = [
             usuario.nome,
             usuario.email,
@@ -167,7 +166,12 @@ const VistoriaDB = {
         ];
 
         db.query(sql, params, function (err, result) {
-            if (err) throw err;
+            if (err) {
+                if (err.code === 'ER_DUP_ENTRY') {
+                    return callback({ erro: 'Este e-mail já está cadastrado.' });
+                }
+                return callback({ erro: 'Erro ao cadastrar usuário no banco.' });
+            }
             callback({
                 id: result.insertId,
                 nome: usuario.nome,

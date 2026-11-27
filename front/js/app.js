@@ -30,7 +30,6 @@ window.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("btnSalvar").addEventListener("click", salvar);
     document.getElementById("btnNovo").addEventListener("click", limparFormularioVistoria);
 
-    // Preenche o responsável automaticamente com o nome do analista logado (se estiver vazio)
     const inputResp = document.getElementById("responsavel");
     if (inputResp && !inputResp.value) {
         inputResp.value = usuarioLogado.nome;

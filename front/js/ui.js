@@ -6,7 +6,7 @@ export function mostrarMensagem(texto, tipo) {
     setTimeout(() => {
         div.innerHTML = "";
         div.className = "";
-    }, 3000);
+    }, 8000);
 }
 
 export function limparFormularioVistoria() {
