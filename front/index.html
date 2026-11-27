@@ -7,20 +7,19 @@
     <title>Vistorias</title>
 
     <link rel="stylesheet" href="css/style.css">
-
 </head>
 
 <body>
     <header>
-        <a href="#home" class="logo">
+        <a href="index.html" class="logo">
             <img src="../imgs/logo.png" alt="Vistorias">
         </a>
 
         <nav>
             <ul>
+                <li><a href="index.html">Início</a></li>
                 <li><a href="Cadastro.html">Cadastrar</a></li>
                 <li><a href="Vistorias.html">Vistorias</a></li>
-                <li><a href="#sobre">Sobre-nós</a></li>
             </ul>
         </nav>
     </header>
@@ -37,21 +36,40 @@
             </h2>
 
             <div class="botoes">
-                <a href="./Login.html"><button type="button">Entrar / Cadastrar Usuário</button></a>
                 <a href="./Vistorias.html"><button type="button">Consultar Vistorias</button></a>
+            </div>
+
+            <h2 class="texto2">
+                Cadastre vistorias, adicione ocorrencias e acompanhe o andamento do vistoriamento do seu carro!
+            </h2>
+
+            <div class="botoes">
+                <a href="./Cadastro.html"><button type="button">Cadastrar Vistorias</button></a>
             </div>
         </div>
     </div>
 
     <script type="module">
-        import { renderizarBarraUsuario } from "./js/auth.js";
+        import { obterSessao, renderizarBarraUsuario } from "./js/auth.js";
+
         window.addEventListener("DOMContentLoaded", () => {
             renderizarBarraUsuario();
+
+            const usuario = obterSessao();
+            const btnLoginHome = document.getElementById("btnLoginHome");
+            if (usuario && btnLoginHome) {
+                btnLoginHome.style.display = "none";
+            }
+
+            if (usuario && usuario.perfil !== "ANALISTA") {
+                document.querySelectorAll('a[href*="Cadastro.html"]').forEach(el => {
+                    el.style.display = "none";
+                });
+            }
         });
     </script>
 
+    <script src="js/script.js"></script>
 </body>
-
-<script src="js/script.js"></script>
 
 </html>

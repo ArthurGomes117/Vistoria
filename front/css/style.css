@@ -68,7 +68,7 @@ button{
     cursor:pointer;
     background:#0066cc;
     color:white;
-    border-radius: 25px;
+    border-radius: 30px;
     font-size: 16px;
     transition: 0.2s;
 }
@@ -84,10 +84,13 @@ button:hover{
 }
 
 .botoes button {
-    height: 50px;
+    height: 70px;
     font-size: 16px;
 }
 
+.texto2 {
+    padding: 20px;
+}
 
 /* Pagina do Cadastro */
 .container{
@@ -189,6 +192,14 @@ th,td{
             grid-template-columns: 1fr 1fr;
             gap: 20px;
         }
+
+        .cadPerfil {
+             width: 100%;
+             padding: 10px;
+             margin-top: 4px;
+             margin-bottom: 12px;
+        }
+
         @media (max-width: 820px) {
             .login-grid {
                 grid-template-columns: 1fr;
