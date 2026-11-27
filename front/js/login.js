@@ -9,7 +9,7 @@ const TECLAS_3X4 = [
     "*", "0", "#"
 ];
 
-let alvoTeclado = "login"; // "login" ou "cadastro"
+let alvoTeclado = "login"; // login ou cadastro
 
 window.addEventListener("DOMContentLoaded", () => {
     renderizarTeclado();
@@ -20,7 +20,7 @@ window.addEventListener("DOMContentLoaded", () => {
     inputSenhaLogin.addEventListener("focus", () => { alvoTeclado = "login"; });
     inputSenhaCad.addEventListener("focus", () => { alvoTeclado = "cadastro"; });
 
-    // Bloqueia digitação direta no teclado físico em ambos os campos de senha
+    // Bloqueia digitação direta no teclado físico nos dois campos de senha
     [inputSenhaLogin, inputSenhaCad].forEach(input => {
         ["keydown", "keypress", "paste", "drop"].forEach(evento => {
             input.addEventListener(evento, e => e.preventDefault());
